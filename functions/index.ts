@@ -42,7 +42,7 @@ export default async function (
             }
             res.code(200).send({ url });
           } catch (error) {
-            console.log("rjm ~ error", error);
+            console.log(error);
           }
         }
       );
