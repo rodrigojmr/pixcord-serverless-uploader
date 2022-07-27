@@ -35,8 +35,11 @@ export default async function (
         async (req, res) => {
           try {
             // @ts-ignore
-            const buffer = await req.file.buffer;
-            const url = await uploadPicture(buffer);
+            const buffer = await req.file?.buffer;
+            let url = "";
+            if (buffer) {
+              url = await uploadPicture(buffer);
+            }
             res.code(200).send({ url });
           } catch (error) {
             console.log("rjm ~ error", error);
