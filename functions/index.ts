@@ -19,7 +19,7 @@ const upload = multer({ storage: storage });
 export default async function (
   instance: FastifyInstance,
   opts: FastifyServerOptions,
-  done
+  done: () => void
 ) {
   instance.get("/", async (req: FastifyRequest, res: FastifyReply) => {
     res.status(200).send({
