@@ -50,6 +50,38 @@ export default async function (
     }
   );
 
+  instance.register(
+    async (instance: FastifyInstance, opts: FastifyServerOptions, done) => {
+      instance.delete<{ Body: { urls: string[] } }>(
+        "/",
+        {
+          schema: {
+            body: {
+              type: "object",
+              properties: {
+                urls: {
+                  type: "array",
+                  items: { type: "string" }
+                }
+              }
+            }
+          }
+        },
+        async (req, res) => {
+          try {
+            await Promise.allSettled(
+              req.body.urls.map(url => deletePicture(url))
+            );
+            res.code(200).send();
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      );
+      done();
+    }
+  );
+
   done();
 }
 
@@ -69,5 +101,19 @@ function uploadPicture(content: Buffer): Promise<string> {
         }
       )
       .end(content);
+  });
+}
+
+function deletePicture(url: string): Promise<void> {
+  const fileName = url.match(/(pixcord\/.+)\.jpg$/)?.[1];
+  if (!fileName) return Promise.reject();
+  return new Promise((resolve, reject) => {
+    cloudinary.v2.uploader.destroy(fileName, (error, result) => {
+      if (error) {
+        reject("Upload failed");
+      } else {
+        resolve();
+      }
+    });
   });
 }
