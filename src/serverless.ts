@@ -3,21 +3,22 @@ dotenv.config();
 
 import multer from "fastify-multer";
 import cors from "@fastify/cors";
-
 // Require the framework
 import Fastify from "fastify";
 
+import init from "./index.js";
+
 // Instantiate Fastify with some config
 const app = Fastify({
-  logger: false
+  logger: true
 });
 
 app.register(cors, {
-  origin: true
+  origin: "*"
 });
 app.register(multer.contentParser);
 // Register your application as a normal plugin.
-app.register(import("../functions/index"), {
+app.register(init, {
   prefix: "/"
 });
 

@@ -1,0 +1,16 @@
+diff --git a/node_modules/fastify/lib/contentTypeParser.js b/node_modules/fastify/lib/contentTypeParser.js
+index 281cde7..ef6af15 100644
+--- a/node_modules/fastify/lib/contentTypeParser.js
++++ b/node_modules/fastify/lib/contentTypeParser.js
+@@ -108,6 +108,11 @@ ContentTypeParser.prototype.existingParser = function (contentType) {
+ 
+ ContentTypeParser.prototype.getParser = function (contentType) {
+   let parser = this.customParsers.get(contentType)
++  if (contentType.includes("multipart")) {
++    parser = this.customParsers.get("multipart")
++    this.cache.set("multipart", parser)
++    return parser
++  }
+   if (parser !== undefined) return parser
+   parser = this.cache.get(contentType)
+   if (parser !== undefined) return parser
